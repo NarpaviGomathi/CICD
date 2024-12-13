@@ -31,6 +31,7 @@ RUN apt-get update && \
     # Setting restrictive umask container-wide
     echo "session optional pam_umask.so" >> /etc/pam.d/common-session && \
     sed -i 's/UMASK.*022/UMASK           007/g' /etc/login.defs
+    chmod +x /entrypoint.sh
 
 # Security enhanced web.xml
 COPY web.xml ${CATALINA_HOME}/conf/
