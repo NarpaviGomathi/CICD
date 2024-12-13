@@ -5,7 +5,7 @@ metadata:
   labels:
     app: tomcat
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: tomcat
@@ -18,15 +18,7 @@ spec:
       - name: tomcat
         image: gomathi747/tomcat:latest
         ports:
-        - containerPort: 8080
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
-    
+        - containerPort: 8080    
 ---
 apiVersion: v1
 kind: Service
