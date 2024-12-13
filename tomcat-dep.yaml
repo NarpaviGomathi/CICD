@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: tomcat
-        image: gomathi747/tomcat:latest
+        image: gomathi747/cicd:latest
         ports:
         - containerPort: 8080    
 ---
