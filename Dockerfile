@@ -41,9 +41,10 @@ COPY server.xml ${CATALINA_HOME}/conf/
 
 # Tomcat start script
 COPY start-tomcat.sh ${CATALINA_HOME}/bin
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 # Start container
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["start-tomcat.sh"]
+CMD ["catalina.sh", "run"]
