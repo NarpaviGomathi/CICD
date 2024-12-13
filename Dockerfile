@@ -31,7 +31,7 @@ RUN apt-get update && \
     # Setting restrictive umask container-wide
     echo "session optional pam_umask.so" >> /etc/pam.d/common-session && \
     sed -i 's/UMASK.*022/UMASK           007/g' /etc/login.defs
-   
+
 
 # Security enhanced web.xml
 COPY web.xml ${CATALINA_HOME}/conf/
@@ -39,12 +39,13 @@ COPY web.xml ${CATALINA_HOME}/conf/
 # Security enhanced server.xml
 COPY server.xml ${CATALINA_HOME}/conf/
 
-# Tomcat start script
-COPY start-tomcat.sh ${CATALINA_HOME}/bin
+# Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
-# Start container
+# Expose Tomcat's default port
+EXPOSE 8080
+
+# Use the entrypoint to initialize and start Tomcat
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["start-tomcat.sh"]
 CMD ["catalina.sh", "run"]
