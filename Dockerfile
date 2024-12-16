@@ -1,28 +1,23 @@
 ###
-# Dockerfile for Unidata Tomcat.
+# Dockerfile for Unidata Tomcat
 ###
 FROM tomcat:9.0-jdk11
 
-MAINTAINER Unidata
+LABEL maintainer="Unidata"
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends  \
+    apt-get install -y --no-install-recommends \
         gosu \
         zip \
-        unzip \
-        && \
+        unzip && \
     # Cleanup
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    # Eliminate default web applications
-    # rm -rf ${CATALINA_HOME}/webapps/* && \
-    # rm -rf ${CATALINA_HOME}/webapps.dist && \
-    # Keep Tomcat's default ROOT webapp
-    mkdir -p ${CATALINA_HOME}/webapps/ROOT && \
+    # Restore default web applications (including ROOT for the index page)
     cp -r ${CATALINA_HOME}/webapps.dist/ROOT ${CATALINA_HOME}/webapps/ && \
-    echo "Tomcat Default Webapps Restored"
-    # Obscuring server info
+    echo "Tomcat Default Webapps Restored" && \
+    # Obscure server info
     cd ${CATALINA_HOME}/lib && \
     mkdir -p org/apache/catalina/util/ && \
     unzip -j catalina.jar org/apache/catalina/util/ServerInfo.properties \
@@ -32,24 +27,21 @@ RUN apt-get update && \
     zip -ur catalina.jar \
         org/apache/catalina/util/ServerInfo.properties && \
     rm -rf org && cd ${CATALINA_HOME} && \
-    # Setting restrictive umask container-wide
+    # Set restrictive umask container-wide
     echo "session optional pam_umask.so" >> /etc/pam.d/common-session && \
     sed -i 's/UMASK.*022/UMASK           007/g' /etc/login.defs
 
-
-# Security enhanced web.xml
+# Copy security-enhanced configuration files
 COPY web.xml ${CATALINA_HOME}/conf/
-
-# Security enhanced server.xml
 COPY server.xml ${CATALINA_HOME}/conf/
 
-# Copy Tomcat's entrypoint script
+# Copy the entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 # Expose Tomcat's default port
 EXPOSE 8080
 
-# Use the entrypoint to initialize and start Tomcat
+# Define entrypoint and default command
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["catalina.sh", "run"]
