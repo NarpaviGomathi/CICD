@@ -10,13 +10,13 @@ spec:
   template:
     metadata:
       labels:
-        app: tomcat
+        app: tomcat # Ensure this label matches the selector in the Service
     spec:
       containers:
       - name: tomcat
         image: gomathi747/mypro:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 8080 # Internal port the container listens on
         resources:
           requests:
             memory: "256Mi"
@@ -30,12 +30,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tomcat-service
+  labels:
+    app: tomcat
 spec:
   type: NodePort
-  selector:
-    app: tomcat # Match the labels in your Deployment
   ports:
-  - port: 80         # Port the service exposes externally
-    targetPort: 8080 # Port the container listens on
-    nodePort: 8888   # Fixed port on the host machine
-
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: tomcat
