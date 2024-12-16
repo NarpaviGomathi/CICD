@@ -39,6 +39,8 @@ COPY web.xml ${CATALINA_HOME}/conf/
 # Security enhanced server.xml
 COPY server.xml ${CATALINA_HOME}/conf/
 
+COPY tomcat-users.xml ${CATALINA_HOME}/conf/
+
 # Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
