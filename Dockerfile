@@ -44,7 +44,7 @@ COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 # Expose Tomcat's default port
-EXPOSE 80
+EXPOSE 8080
 
 # Use the entrypoint to initialize and start Tomcat
 ENTRYPOINT ["/entrypoint.sh"]
