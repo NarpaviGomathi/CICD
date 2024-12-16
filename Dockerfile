@@ -16,8 +16,12 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     # Eliminate default web applications
-    rm -rf ${CATALINA_HOME}/webapps/* && \
-    rm -rf ${CATALINA_HOME}/webapps.dist && \
+    # rm -rf ${CATALINA_HOME}/webapps/* && \
+    # rm -rf ${CATALINA_HOME}/webapps.dist && \
+     # Keep Tomcat's default ROOT webapp
+    mkdir -p ${CATALINA_HOME}/webapps/ROOT && \
+    cp -r ${CATALINA_HOME}/webapps.dist/ROOT ${CATALINA_HOME}/webapps/ && \
+    echo "Tomcat Default Webapps Restored"
     # Obscuring server info
     cd ${CATALINA_HOME}/lib && \
     mkdir -p org/apache/catalina/util/ && \
