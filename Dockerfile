@@ -1,23 +1,24 @@
 ###
-# Dockerfile for Unidata Tomcat
+# Dockerfile for Unidata Tomcat.
 ###
 FROM tomcat:9.0-jdk11
 
-LABEL maintainer="Unidata"
+MAINTAINER Unidata
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends  \
         gosu \
         zip \
-        unzip && \
+        unzip \
+        && \
     # Cleanup
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    # Restore default web applications (including ROOT for the index page)
-    cp -r ${CATALINA_HOME}/webapps.dist/ROOT ${CATALINA_HOME}/webapps/ && \
-    echo "Tomcat Default Webapps Restored" && \
-    # Obscure server info
+    # Eliminate default web applications
+    rm -rf ${CATALINA_HOME}/webapps/* && \
+    rm -rf ${CATALINA_HOME}/webapps.dist && \
+    # Obscuring server info
     cd ${CATALINA_HOME}/lib && \
     mkdir -p org/apache/catalina/util/ && \
     unzip -j catalina.jar org/apache/catalina/util/ServerInfo.properties \
@@ -27,21 +28,24 @@ RUN apt-get update && \
     zip -ur catalina.jar \
         org/apache/catalina/util/ServerInfo.properties && \
     rm -rf org && cd ${CATALINA_HOME} && \
-    # Set restrictive umask container-wide
+    # Setting restrictive umask container-wide
     echo "session optional pam_umask.so" >> /etc/pam.d/common-session && \
     sed -i 's/UMASK.*022/UMASK           007/g' /etc/login.defs
 
-# Copy security-enhanced configuration files
+
+# Security enhanced web.xml
 COPY web.xml ${CATALINA_HOME}/conf/
+
+# Security enhanced server.xml
 COPY server.xml ${CATALINA_HOME}/conf/
 
-# Copy the entrypoint script
+# Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 # Expose Tomcat's default port
 EXPOSE 8080
 
-# Define entrypoint and default command
+# Use the entrypoint to initialize and start Tomcat
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["catalina.sh", "run"]
