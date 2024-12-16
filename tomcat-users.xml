@@ -35,9 +35,9 @@
   application, do not forget to remove the <!.. ..> that surrounds them. You
   will also need to set the passwords to something appropriate.
 -->
-<!--
-  <user username="admin" password="<must-be-changed>" roles="manager-gui"/>
-  <user username="robot" password="<must-be-changed>" roles="manager-script"/>
+<--
+  <user username="admin" password="password" roles="manager-gui"/>
+  <user username="robot" password="password" roles="manager-script"/>
 -->
 <!--
   The sample user and role entries below are intended for use with the
