@@ -36,8 +36,10 @@
   will also need to set the passwords to something appropriate.
 -->
 <--
+ <tomcat-users>
+  <role rolename="manager-gui"/>
   <user username="admin" password="password" roles="manager-gui"/>
-  <user username="robot" password="password" roles="manager-script"/>
+ </tomcat-users>
 -->
 <!--
   The sample user and role entries below are intended for use with the
