@@ -18,17 +18,6 @@ RUN apt-get update && \
 RUN rm -rf ${CATALINA_HOME}/webapps/* && \
     rm -rf ${CATALINA_HOME}/webapps.dist
 
-# Obscure server information in catalina.jar
-RUN cd ${CATALINA_HOME}/lib && \
-    mkdir -p org/apache/catalina/util/ && \
-    unzip -j catalina.jar org/apache/catalina/util/ServerInfo.properties \
-        -d org/apache/catalina/util/ && \
-    sed -i 's/server.info=.*/server.info=Apache Tomcat/g' \
-        org/apache/catalina/util/ServerInfo.properties && \
-    zip -ur catalina.jar org/apache/catalina/util/ServerInfo.properties && \
-    rm -rf org && \
-    cd ${CATALINA_HOME}
-
 # Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
