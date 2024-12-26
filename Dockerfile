@@ -5,9 +5,6 @@
 # Use Bitnami Tomcat 9.0 as base image
 FROM bitnami/tomcat:9.0
 
-# Remove default web applications
-RUN rm -rf ${CATALINA_HOME}/webapps/*
-
 # Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
