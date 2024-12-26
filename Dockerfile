@@ -3,8 +3,6 @@
 ###
 FROM bitnami/tomcat:9.0
 
-MAINTAINER Unidata
-
 # Install necessary packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends  \
