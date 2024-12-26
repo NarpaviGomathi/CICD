@@ -5,15 +5,6 @@
 # Use Bitnami Tomcat 9.0 as base image
 FROM bitnami/tomcat:9.0
 
-# Install necessary packages and cleanup
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        gosu \
-        zip \
-        unzip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # Remove default web applications
 RUN rm -rf ${CATALINA_HOME}/webapps/*
 
