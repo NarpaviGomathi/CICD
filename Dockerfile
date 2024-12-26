@@ -14,6 +14,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Remove default web applications
+RUN rm -rf ${CATALINA_HOME}/webapps/*
+
 # Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
@@ -24,3 +27,4 @@ EXPOSE 8080
 # Use the entrypoint to initialize and start Tomcat
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["catalina.sh", "run"]
+
