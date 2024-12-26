@@ -14,10 +14,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Remove default web applications
-RUN rm -rf ${CATALINA_HOME}/webapps/* && \
-    rm -rf ${CATALINA_HOME}/webapps.dist
-
 # Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
