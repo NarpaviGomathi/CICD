@@ -32,13 +32,6 @@ RUN apt-get update && \
     echo "session optional pam_umask.so" >> /etc/pam.d/common-session && \
     sed -i 's/UMASK.*022/UMASK           007/g' /etc/login.defs
 
-
-# Security enhanced web.xml
-COPY web.xml ${CATALINA_HOME}/conf/
-
-# Security enhanced server.xml
-COPY server.xml ${CATALINA_HOME}/conf/
-
 # Copy Tomcat's entrypoint script
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
