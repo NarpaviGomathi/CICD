@@ -10,6 +10,7 @@ FROM bitnami/tomcat:9.0
 # Expose Tomcat's default port
 EXPOSE 8080
 
-CMD [ "/opt/bitnami/scripts/tomcat/run.sh" ]
+CMD ["catalina.sh", "run"]
+
 
 
