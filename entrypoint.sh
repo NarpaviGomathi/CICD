@@ -1,49 +1,35 @@
 #!/bin/bash
-set -e
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
 
-# preferable to fire up Tomcat via start-tomcat.sh which will start Tomcat with
-# security manager, but inheriting containers can also start Tomcat via
-# catalina.sh
+# shellcheck disable=SC1091
 
-if [ "$1" = 'start-tomcat.sh' ] || [ "$1" = 'catalina.sh' ]; then
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace # Uncomment this line for debugging purposes
 
-    USER_ID=${TOMCAT_USER_ID:-1000}
-    GROUP_ID=${TOMCAT_GROUP_ID:-1000}
+# Load libraries
+. /opt/bitnami/scripts/libtomcat.sh
+. /opt/bitnami/scripts/libbitnami.sh
+. /opt/bitnami/scripts/liblog.sh
 
-    ###
-    # Tomcat user
-    ###
-    # create group for GROUP_ID if one doesn't already exist
-    if ! getent group $GROUP_ID &> /dev/null; then
-      groupadd -r tomcat -g $GROUP_ID
-    fi
-    # create user for USER_ID if one doesn't already exist
-    if ! getent passwd $USER_ID &> /dev/null; then
-      useradd -u $USER_ID -g $GROUP_ID tomcat
-    fi
-    # alter USER_ID with nologin shell and CATALINA_HOME home directory
-    usermod -d "${CATALINA_HOME}" -s /sbin/nologin $(id -u -n $USER_ID)
+# Load Tomcat environment variables
+. /opt/bitnami/scripts/tomcat-env.sh
 
-    ###
-    # Change CATALINA_HOME ownership to tomcat user and tomcat group
-    # Restrict permissions on conf
-    ###
+print_welcome_page
 
-    chown -R $USER_ID:$GROUP_ID ${CATALINA_HOME} && find ${CATALINA_HOME}/conf \
-        -type d -exec chmod 755 {} \; -o -type f -exec chmod 400 {} \;
-    sync
+# We add the copy from default config in the entrypoint to not break users
+# bypassing the setup.sh logic. If the file already exists do not overwrite (in
+# case someone mounts a configuration file in /opt/bitnami/tomcat/conf)
+debug "Copying files from $TOMCAT_DEFAULT_CONF_DIR to $TOMCAT_CONF_DIR"
+cp -nr "$TOMCAT_DEFAULT_CONF_DIR"/. "$TOMCAT_CONF_DIR"
 
-    ###
-    # Deactivate CORS filter in web.xml if DISABLE_CORS=1
-    # Useful if CORS is handled outside of Tomcat (e.g. in a proxying webserver like nginx)
-    ###
-    if [ "$DISABLE_CORS" == "1" ]; then
-      echo "Deactivating Tomcat CORS filter"
-      sed -i 's/<!-- CORS_START.*/<!-- CORS DEACTIVATED BY DISABLE_CORS -->\n<!--/; s/^.*<!-- CORS_END -->/-->/' \
-        ${CATALINA_HOME}/conf/web.xml
-    fi
-
-    exec gosu $USER_ID "$@"
+if [[ "$*" = *"/opt/bitnami/scripts/tomcat/run.sh"* ]]; then
+    info "** Starting tomcat setup **"
+    /opt/bitnami/scripts/tomcat/setup.sh
+    info "** tomcat setup finished! **"
 fi
 
+echo ""
 exec "$@"
