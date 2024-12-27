@@ -7,6 +7,8 @@ FROM docker.io/bitnami/tomcat:10.1
 # Set environment variable to allow empty passwords
 ENV ALLOW_EMPTY_PASSWORD=yes
 
+
+
 # Expose the default Tomcat port
 EXPOSE 8080
 
