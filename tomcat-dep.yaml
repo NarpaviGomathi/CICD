@@ -18,9 +18,9 @@ spec:
         ports:
         - containerPort: 8080 # Internal port the container listens on
         env:
-          - name: TOMCAT_USERNAME
+        - name: TOMCAT_USERNAME
           value: "admin"
-          - name: TOMCAT_PASSWORD
+        - name: TOMCAT_PASSWORD
           value: "admin"
         resources:
           requests:
@@ -45,3 +45,4 @@ spec:
     protocol: TCP
   selector:
     app: tomcat
+
