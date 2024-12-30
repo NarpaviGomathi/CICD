@@ -17,6 +17,11 @@ spec:
         image: gomathi747/mypro:latest
         ports:
         - containerPort: 8080 # Internal port the container listens on
+        env:
+          - name: TOMCAT_USERNAME
+          value: "admin"
+          - name: TOMCAT_PASSWORD
+          value: "admin"
         resources:
           requests:
             memory: "256Mi"
