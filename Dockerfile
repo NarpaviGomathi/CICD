@@ -10,7 +10,6 @@ FROM docker.io/bitnami/tomcat:10.1
 #ENV PASSWORD=demo@123
 
 
-
 # Expose the default Tomcat port
 EXPOSE 8080
 
